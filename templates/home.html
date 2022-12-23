@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OCR Website</title>
+  <link rel="stylesheet" type="text/css" href="static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">OCR Website</h1>
+    <form action="/process" method="post" enctype="multipart/form-data" class="d-flex flex-column align-items-center">
+      <div class="custom-file mb-3">
+        <input type="file" name="image" id="image-upload" accept="image/*" class="custom-file-input" required>
+        <label for="image-upload" class="custom-file-label">Choose file</label>
+      </div>
+      <div class="input-group mb-3">
+        <input type="text" name="image-url" placeholder="Or enter image URL" class="form-control">
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-primary">Extract Text</button>
+        </div>
+      </div>
+      <div id="image-drop-zone" class="text-center py-5 bg-light rounded">
+        <p>Or drag image here</p>
+      </div>
+    </form>
+  </div>
+  <script>
+    // Add drag and drop functionality to image drop zone
+    var dropZone = document.getElementById('image-drop-zone');
+    dropZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.classList.add('dragover');
+    });
+    dropZone.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.classList.remove('dragover');
+    });
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      dropZone.classList.remove('dragover');
+      // Get the dropped file
+      var file = e.dataTransfer.files[0];
+      // Set the file as the value for the image upload input
+      document.getElementById('image-upload').files = e.dataTransfer.files;
+    });
+    // Add paste functionality to image drop zone
+    dropZone.addEventListener('paste', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Check if the paste event contains an image
+      if (e.clipboardData.items[0].type.indexOf('image') === -1) {
+        return;
+      }
+      // Get the pasted image as a blob
+      var blob = e.clipboardData.items[0].getAsFile();
+      // Create a new File object with the pasted image
+      var file = new File([blob], 'pasted-image.png', { type: 'image/png' });
+      // Set the file as the value for the image upload input
+      document.getElementById('image-upload').files = [file];
+    });
+  </script>
+</body>
+</html>
